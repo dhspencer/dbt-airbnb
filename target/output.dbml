@@ -1,0 +1,84 @@
+//Tables (based on the selection criteria)
+//--configured at schema: airbnb.dev
+Table "model.airbnb.dim_hosts_clean" {
+  "host_id" "number"
+  "host_name" "text"
+  "is_superhost" "text"
+  "created_at" "timestamp_ntz"
+  "updated_at" "timestamp_ntz"
+  "host_since" "date"
+  "host_location" "string"
+  "host_response_time" "string"
+  "host_response_rate" "unknown"
+
+  Note: ""
+}
+//--configured at schema: airbnb.dev
+Table "model.airbnb.dim_listings_clean" {
+  "listing_id" "number" [note: "Primiary key for each listing."]
+  "listing_name" "text"
+  "room_type" "text" [note: "The type of room being offered."]
+  "minimum_nights" "number" [note: "Minimum number of nights required to rent this property.\r\n\r\nKeep in mind that old listings have `minimum nights` set to 0 in the source tables. The cleansing algorithm updates this to `1`."]
+  "host_id" "number" [note: "Foreign key to the dim_hosts_clean table."]
+  "price" "number"
+  "created_at" "timestamp_ntz"
+  "updated_at" "timestamp_ntz"
+
+  Note: "Cleaned dimension table which contains Airbnb listings."
+}
+//--configured at schema: airbnb.dev
+Table "model.airbnb.dim_listings_with_hosts" {
+  "listing_id" "number"
+  "listing_name" "text"
+  "room_type" "text"
+  "minimum_nights" "number"
+  "price" "number"
+  "host_id" "number"
+  "host_name" "text"
+  "host_is_superhost" "text"
+  "created_at" "timestamp_ntz"
+  "updated_at" "timestamp_ntz"
+
+  Note: ""
+}
+//--configured at schema: airbnb.dev
+Table "model.airbnb.fct_reviews" {
+  "listing_id" "number"
+  "review_date" "timestamp_ntz"
+  "reviewer_name" "text"
+  "review_text" "text"
+  "review_sentiment" "text"
+
+  Note: ""
+}
+//--configured at schema: airbnb.dev
+Table "model.airbnb.mart_fullmoom_reviews" {
+  "listing_id" "number"
+  "review_date" "timestamp_ntz"
+  "reviewer_name" "text"
+  "review_text" "text"
+  "review_sentiment" "text"
+  "is_full_moon" "text"
+
+  Note: ""
+}
+//--configured at schema: airbnb.dev
+Table "model.airbnb.src_hosts" {
+  "unknown" "unknown"
+
+  Note: ""
+}
+//--configured at schema: airbnb.dev
+Table "model.airbnb.src_listings" {
+  "unknown" "unknown"
+
+  Note: ""
+}
+//--configured at schema: airbnb.dev
+Table "model.airbnb.src_reviews" {
+  "unknown" "unknown"
+
+  Note: ""
+}
+//Refs (based on the DBT Relationship Tests)
+Ref: "model.airbnb.dim_listings_clean"."host_id" > "model.airbnb.dim_hosts_clean"."host_id"
